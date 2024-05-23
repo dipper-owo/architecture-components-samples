@@ -36,8 +36,7 @@ import java.io.IOException
  * @see [PageKeyedSubredditPagingSource]
  */
 class ItemKeyedSubredditPagingSource(
-    private val redditApi: RedditApi,
-    private val subredditName: String
+    private val redditApi: RedditApi, private val subredditName: String
 ) : PagingSource<String, RedditPost>() {
     override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditPost> {
         return try {

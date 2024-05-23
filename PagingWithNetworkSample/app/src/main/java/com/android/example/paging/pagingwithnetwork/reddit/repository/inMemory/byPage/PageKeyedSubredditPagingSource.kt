@@ -33,8 +33,7 @@ import java.io.IOException
  * @see ItemKeyedSubredditPagingSource
  */
 class PageKeyedSubredditPagingSource(
-    private val redditApi: RedditApi,
-    private val subredditName: String
+    private val redditApi: RedditApi, private val subredditName: String
 ) : PagingSource<String, RedditPost>() {
     override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditPost> {
         return try {
@@ -46,9 +45,7 @@ class PageKeyedSubredditPagingSource(
             ).data
 
             Page(
-                data = data.children.map { it.data },
-                prevKey = data.before,
-                nextKey = data.after
+                data = data.children.map { it.data }, prevKey = data.before, nextKey = data.after
             )
         } catch (e: IOException) {
             LoadResult.Error(e)

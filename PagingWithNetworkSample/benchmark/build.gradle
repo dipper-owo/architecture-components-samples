@@ -6,10 +6,9 @@ apply plugin: 'androidx.benchmark'
 android {
     compileSdkVersion build_versions.compile_sdk
     defaultConfig {
+        testInstrumentationRunnerArguments mode: 'none'
         minSdkVersion 21
         targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
 
         // Set this argument to capture profiling information, instead of measuring performance.
         // Can be one of:
@@ -17,7 +16,6 @@ android {
         //   * Sampled
         //   * Method
         // See full descriptions of available options at: d.android.com/benchmark#profiling
-        testInstrumentationRunnerArgument 'androidx.benchmark.profiling.mode', 'none'
     }
 
     testBuildType = "release"
@@ -45,6 +43,8 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
+    namespace 'com.example.benchmark'
+    testNamespace 'com.example.benchmark.test'
 }
 
 dependencies {

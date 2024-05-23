@@ -33,7 +33,6 @@ import com.android.example.paging.pagingwithnetwork.databinding.ActivityRedditBi
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.paging.asMergedLoadStates
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
@@ -44,22 +43,19 @@ import kotlinx.coroutines.flow.filter
  * The intent arguments can be modified to make it use a different repository (see MainActivity).
  */
 class RedditActivity : AppCompatActivity() {
-    lateinit var binding: ActivityRedditBinding
-        private set
+    private lateinit var binding: ActivityRedditBinding
 
     private val model: SubRedditViewModel by viewModels {
         object : AbstractSavedStateViewModelFactory(this, null) {
-            override fun <T : ViewModel?> create(
+            override fun <T : ViewModel> create(
                 key: String,
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
-                val repo = ServiceLocator.instance(this@RedditActivity)
-                    .getRepository(repoType)
-                @Suppress("UNCHECKED_CAST")
-                return SubRedditViewModel(repo, handle) as T
+                val repo = ServiceLocator.instance(this@RedditActivity).getRepository(repoType)
+                @Suppress("UNCHECKED_CAST") return SubRedditViewModel(repo, handle) as T
             }
         }
     }
@@ -80,13 +76,13 @@ class RedditActivity : AppCompatActivity() {
         val glide = GlideApp.with(this)
         adapter = PostsAdapter(glide)
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = PostsLoadStateAdapter(adapter),
-            footer = PostsLoadStateAdapter(adapter)
+            header = PostsLoadStateAdapter(adapter), footer = PostsLoadStateAdapter(adapter)
         )
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collect { loadStates ->
-                binding.swipeRefresh.isRefreshing = loadStates.mediator?.refresh is LoadState.Loading
+                binding.swipeRefresh.isRefreshing =
+                    loadStates.mediator?.refresh is LoadState.Loading
             }
         }
 

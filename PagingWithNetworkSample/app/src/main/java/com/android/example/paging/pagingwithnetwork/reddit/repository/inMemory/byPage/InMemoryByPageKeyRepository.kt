@@ -30,8 +30,7 @@ class InMemoryByPageKeyRepository(private val redditApi: RedditApi) : RedditPost
         PagingConfig(pageSize)
     ) {
         PageKeyedSubredditPagingSource(
-            redditApi = redditApi,
-            subredditName = subReddit
+            redditApi = redditApi, subredditName = subReddit
         )
     }.flow
 }

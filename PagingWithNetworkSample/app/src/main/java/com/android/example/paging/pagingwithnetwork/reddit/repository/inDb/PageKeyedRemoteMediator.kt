@@ -17,9 +17,7 @@ import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class PageKeyedRemoteMediator(
-    private val db: RedditDb,
-    private val redditApi: RedditApi,
-    private val subredditName: String
+    private val db: RedditDb, private val redditApi: RedditApi, private val subredditName: String
 ) : RemoteMediator<Int, RedditPost>() {
     private val postDao: RedditPostDao = db.posts()
     private val remoteKeyDao: SubredditRemoteKeyDao = db.remoteKeys()
@@ -31,8 +29,7 @@ class PageKeyedRemoteMediator(
     }
 
     override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, RedditPost>
+        loadType: LoadType, state: PagingState<Int, RedditPost>
     ): MediatorResult {
         try {
             // Get the closest item from PagingState that we want to load data around.
@@ -59,10 +56,7 @@ class PageKeyedRemoteMediator(
             }
 
             val data = redditApi.getTop(
-                subreddit = subredditName,
-                after = loadKey,
-                before = null,
-                limit = when (loadType) {
+                subreddit = subredditName, after = loadKey, before = null, limit = when (loadType) {
                     REFRESH -> state.config.initialLoadSize
                     else -> state.config.pageSize
                 }

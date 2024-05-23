@@ -35,18 +35,16 @@ interface RedditApi {
 
     @GET("/r/{subreddit}/hot.json")
     suspend fun getTop(
-            @Path("subreddit") subreddit: String,
-            @Query("limit") limit: Int,
-            @Query("after") after: String? = null,
-            @Query("before") before: String? = null
+        @Path("subreddit") subreddit: String,
+        @Query("limit") limit: Int,
+        @Query("after") after: String? = null,
+        @Query("before") before: String? = null
     ): ListingResponse
 
     class ListingResponse(val data: ListingData)
 
     class ListingData(
-            val children: List<RedditChildrenResponse>,
-            val after: String?,
-            val before: String?
+        val children: List<RedditChildrenResponse>, val after: String?, val before: String?
     )
 
     data class RedditChildrenResponse(val data: RedditPost)
@@ -57,15 +55,10 @@ interface RedditApi {
             val logger = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { Log.d("API", it) })
             logger.level = HttpLoggingInterceptor.Level.BASIC
 
-            val client = OkHttpClient.Builder()
-                    .addInterceptor(logger)
-                    .build()
-            return Retrofit.Builder()
-                    .baseUrl(BASE_URL.toHttpUrlOrNull()!!)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                    .create(RedditApi::class.java)
+            val client = OkHttpClient.Builder().addInterceptor(logger).build()
+            return Retrofit.Builder().baseUrl(BASE_URL.toHttpUrlOrNull()!!).client(client)
+                .addConverterFactory(GsonConverterFactory.create()).build()
+                .create(RedditApi::class.java)
         }
     }
 }
